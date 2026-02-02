@@ -28,6 +28,18 @@
 - name: install-spark
   image: {{ include "amoro.optimizer.container.spark.image" .}}
   command: ["cp", "/opt/spark/.", "/opt/spark_install/", "-R"]
+  {{- with .Values.optimizer.spark.initContainer.resources }}
+  resources:
+    {{- toYaml . | nindent 4 }}
+  {{- else }}
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 2
+      memory: 8Gi
+  {{- end }}
   volumeMounts:
     - name: spark-install
       mountPath: /opt/spark_install
